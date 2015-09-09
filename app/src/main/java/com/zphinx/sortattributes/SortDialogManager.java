@@ -8,7 +8,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * License for more details.
- * <p>
+ * <p/>
  * THERE IS NO WARRANTY FOR THIS SOFTWARE, TO THE EXTENT PERMITTED BY
  * APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING BY ZPHINX SOFTWARE SOLUTIONS
  * AND/OR OTHER PARTIES WHO PROVIDE THIS SOFTWARE "AS IS" WITHOUT WARRANTY
@@ -17,7 +17,7 @@
  * PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM
  * IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF
  * ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
- * <p>
+ * <p/>
  * IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
  * WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
  * THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
@@ -27,7 +27,7 @@
  * PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
  * EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGES.
- * <p>
+ * <p/>
  * For further information, please go to http://www.zphinx.co.uk/
  */
 package com.zphinx.sortattributes;
@@ -49,7 +49,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 
-
 /**
  * Manages the dialog for the Sort dialog used by this app.
  *
@@ -64,17 +63,16 @@ public class SortDialogManager {
 
     private AlertDialog alertDialog = null;
 
-
     private int selectedIndex = -1;
-
 
     private static final String TAG = SortDialogManager.class.getSimpleName();
 
-
     /**
-     * Initializes and displays the alert dialog hosting the list of StateTextView objects
+     * Initializes and displays the alert dialog hosting the list of
+     * StateTextView objects
      *
-     * @param activity - The activity which uses this dialog
+     * @param activity
+     *            - The activity which uses this dialog
      */
     public void showAlertDialog(final Activity activity) {
         String title = null;
@@ -83,7 +81,6 @@ public class SortDialogManager {
             Resources res = activity.getResources();
             String[] sortStrings = res.getStringArray(R.array.searchSortValues);
             title = "Sort Search Results";
-
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppCompatAlertDialogStyle);
             ListAdapter adapter = new SortAdapter(activity, R.layout.spinner_sort_list, sortStrings);
@@ -109,9 +106,9 @@ public class SortDialogManager {
         alertDialog.show();
     }
 
-
     /**
-     * An adapter used by this dialog manager to parse its list of StateTextview objects
+     * An adapter used by this dialog manager to parse its list of StateTextview
+     * objects
      *
      * @author David Ladapo Created: 17 Aug 2013 15:38:48
      * @version 1.0 Copyright (&copy;) 2013
@@ -199,12 +196,14 @@ public class SortDialogManager {
         }
     }
 
-
     /**
      * Creates an ItemListener used by the List adapter
      *
-     * @param activity - The activity which uses this dialog
-     * @param adapter  - The adapter associated with the list of state textview objects
+     * @param activity
+     *            - The activity which uses this dialog
+     * @param adapter
+     *            - The adapter associated with the list of state textview
+     *            objects
      * @return A instance of an onClickListener used by the stated list adapter
      */
     private OnClickListener createItemListener(final Activity activity, final ListAdapter adapter) {
@@ -227,12 +226,17 @@ public class SortDialogManager {
     }
 
     /**
-     * Sets the image to be shown by the drawable associated with the StateTextview
+     * Sets the image to be shown by the drawable associated with the
+     * StateTextview
      *
-     * @param text     The state textview object whose image is to be set
-     * @param draws    The array of drawables used by the textview
-     * @param activity - The activity which uses this dialog
-     * @throws NotFoundException If an error occurs
+     * @param text
+     *            The state textview object whose image is to be set
+     * @param draws
+     *            The array of drawables used by the textview
+     * @param activity
+     *            - The activity which uses this dialog
+     * @throws NotFoundException
+     *             If an error occurs
      */
 
     private static void setCurrentImage(final StateTextView text, Drawable[] draws, Activity activity) throws NotFoundException {
@@ -264,22 +268,22 @@ public class SortDialogManager {
 
     }
 
-
     /**
      * A listener used to fire the sorting action promoted by this dialog
      *
-     * @param adapter The adapter associated with the list of state textview objects
+     * @param adapter
+     *            The adapter associated with the list of state textview objects
      * @return A click listener used to sort data in the associated activity
      */
     private OnClickListener sortListener(final ListAdapter adapter, final Activity activity) {
         return new OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 StateTextView stv = (StateTextView) adapter.getItem(selectedIndex);
-                Log.d(TAG, "The stateView is: ........................." + stv);
+                Log.d(TAG, "The stateView is: ........................." + stv + "at position: " + selectedIndex);
                 if (stv != null) {
                     // currently not checking for changes??
                     int direction = stv.getSortDirection();
-                    MainActivity.sortIndex = selectedIndex;
+                    MainActivity.sortIndex = selectedIndex + 1;
                     MainActivity.sortDirection = direction;
                     ((MainActivity) activity).fireSorter();
                 }
@@ -301,10 +305,14 @@ public class SortDialogManager {
     /**
      * Specifies the actions that ovccur when a stateTextView object is clicked
      *
-     * @param activity The activity hosting this dialogManager
-     * @param adapter  The list adapter containing multiple stateview
-     * @param position The position of the stateview object been clicked
-     * @throws NotFoundException If the specified state textview is not available
+     * @param activity
+     *            The activity hosting this dialogManager
+     * @param adapter
+     *            The list adapter containing multiple stateview
+     * @param position
+     *            The position of the stateview object been clicked
+     * @throws NotFoundException
+     *             If the specified state textview is not available
      */
     private void clickStateTextView(final Activity activity, final ListAdapter adapter, int position) throws NotFoundException {
         if (position > -1) {

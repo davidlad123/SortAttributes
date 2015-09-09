@@ -24,7 +24,7 @@ import static android.view.LayoutInflater.from;
 
 public class MainActivity extends Activity {
 
-    public static final int LIST_NUM = 12;
+    public static final int LIST_NUM = 10;
     /**
      * Determines if we are sorting ascending or sorting descending
      */
@@ -57,18 +57,9 @@ public class MainActivity extends Activity {
             }
         });
         mSortables = createSortables();
-        mAdapter = new SortListAdapter(MainActivity.this, R.layout.list_item, R.id.user_name, mSortables.toArray(new SortableImpl[]{}));
-        // Log.e(TAG, "the adapter has item size: "+mAdapter.getCount());
+        mAdapter = new SortListAdapter(MainActivity.this, R.layout.list_item, R.id.user_name, mSortables);
+        Log.e(TAG, "the adapter has item size: " + mAdapter.getCount());
         mList.setAdapter(mAdapter);
-
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        //mList.refreshDrawableState();
-
 
     }
 
@@ -78,7 +69,7 @@ public class MainActivity extends Activity {
      * @return An instance of an array list
      */
     private ArrayList<SortableImpl> createSortables() {
-        ArrayList<SortableImpl> allSorts = new ArrayList(LIST_NUM);
+        ArrayList<SortableImpl> allSorts = new ArrayList<SortableImpl>(LIST_NUM);
         long difference = 3600000;
         for (int i = 0; i < LIST_NUM; i++) {
             allSorts.add(createSingleSort(i, difference));
@@ -90,30 +81,33 @@ public class MainActivity extends Activity {
     /**
      * Creates a sortable object using the parameters given
      *
-     * @param index      The index to use for generating values
-     * @param difference The time difference to specify between values
+     * @param index
+     *            The index to use for generating values
+     * @param difference
+     *            The time difference to specify between values
      */
     private SortableImpl createSingleSort(int index, long difference) {
         SortableImpl sort = new SortableImpl();
         long sysTime = System.currentTimeMillis();
-        long time = sysTime + (difference * index);
+        long time = sysTime + (difference * randInt(1, 20));
         long modDate = sysTime + (difference * randInt(1, 10));
         sort.numberOfViews = randInt(0, 100);
         sort.modificationDate = new Date(modDate);
-        sort.lastLoginDate = new Date(time - (difference * index));
+        sort.lastLoginDate = new Date(time);
         sort.price = randDouble();
         sort.userName = "User " + index;
         return sort;
     }
 
-
     /**
-     * Returns a psuedo-random number between min and max, inclusive.
-     * The difference between min and max can be at most
+     * Returns a psuedo-random number between min and max, inclusive. The
+     * difference between min and max can be at most
      * <code>Integer.MAX_VALUE - 1</code>.
      *
-     * @param min Minimim value
-     * @param max Maximim value.  Must be greater than min.
+     * @param min
+     *            Minimum value
+     * @param max
+     *            Maximum value. Must be greater than min.
      * @return Integer between min and max, inclusive.
      * @see java.util.Random#nextInt(int)
      */
@@ -129,11 +123,10 @@ public class MainActivity extends Activity {
         return randomNum;
     }
 
-
     /**
-     * Generates a arandom double for use by this app
+     * Generates a random double for use by this app
      *
-     * @return
+     * @return A random double number
      */
     private double randDouble() {
 
@@ -144,7 +137,7 @@ public class MainActivity extends Activity {
         // so add 1 to make it inclusive
         double randomNum = rand.nextDouble() * 100;
 
-        return randomNum;
+        return Math.round(randomNum);
     }
 
     @Override
@@ -161,14 +154,13 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        // noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 
     /**
      * Sorts the list of object based on the sortIndex and the SortDirection
@@ -179,36 +171,35 @@ public class MainActivity extends Activity {
         if (sortDirection == StateTextView.SORT_ASC) {
             Collections.reverse(mSortables);
         }
-        mAdapter.setOptions(mSortables.toArray(new SortableImpl[]{}));
+        mAdapter.setOptions(mSortables);
         mAdapter.notifyDataSetChanged();
+
     }
 
     /**
-     *
+     * The list adapter used by the associated list view
      */
     public class SortListAdapter extends ArrayAdapter<SortableImpl> {
 
-        private SortableImpl[] options;
+        private ArrayList<SortableImpl> options;
 
-
-        public SortListAdapter(Context context, int resourceId, int textResourceId, SortableImpl[] options) {
+        public SortListAdapter(Context context, int resourceId, int textResourceId, ArrayList<SortableImpl> options) {
             super(context, resourceId, textResourceId, options);
             this.options = options;
-            Log.d(TAG, "The options size is: " + options.length);
-
+            Log.d(TAG, "The options size is: " + options.size());
 
         }
 
         /*
-        * (non-Javadoc)
-        *
-        * @see android.widget.ArrayAdapter#getItem(int)
-        */
+         * (non-Javadoc)
+         *
+         * @see android.widget.ArrayAdapter#getItem(int)
+         */
         @Override
         public SortableImpl getItem(int position) {
             if (!isEmpty() && position > -1) {
 
-                return options[position];
+                return options.get(position);
             }
             return null;
 
@@ -217,7 +208,9 @@ public class MainActivity extends Activity {
         /**
          * Get the row id associated with the specified position in the list.
          *
-         * @param position The position of the item within the adapter's data set whose row id we want.
+         * @param position
+         *            The position of the item within the adapter's data set
+         *            whose row id we want.
          * @return The id of the item at the specified position.
          */
         @Override
@@ -230,70 +223,59 @@ public class MainActivity extends Activity {
          */
         @Override
         public int getCount() {
-            return options.length;
+            return options.size();
         }
 
         /*
-                     * (non-Javadoc)
-                     *
-                     * @see android.widget.ArrayAdapter#getView(int, android.view.View,
-                     * android.view.ViewGroup)
-                     */
+         * (non-Javadoc)
+         *
+         * @see android.widget.ArrayAdapter#getView(int, android.view.View,
+         * android.view.ViewGroup)
+         */
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            View rowView = super.getView(position, convertView, parent);
-            if (rowView == null) {
-                LayoutInflater inflater = from(MainActivity.this);
-                rowView = inflater.inflate(R.layout.list_item, parent, false);
 
-                TextView modDate = (TextView) rowView.findViewById(R.id.mod_date);
-                modDate.setText(options[position].modificationDate.toString());
+            LayoutInflater inflater = from(MainActivity.this);
+            View rowView = inflater.inflate(R.layout.list_item, parent, false);
+            SortableImpl sorted = options.get(position);
+            TextView modDate = (TextView) rowView.findViewById(R.id.mod_date);
+            modDate.setText(sorted.modificationDate.toString());
 
-                TextView lastLogin = (TextView) rowView.findViewById(R.id.last_login);
-                lastLogin.setText(options[position].lastLoginDate.toString());
+            TextView lastLogin = (TextView) rowView.findViewById(R.id.last_login);
+            lastLogin.setText(sorted.lastLoginDate.toString());
 
-                TextView userName = (TextView) rowView.findViewById(R.id.user_name);
-                userName.setText(options[position].userName);
+            TextView userName = (TextView) rowView.findViewById(R.id.user_name);
+            userName.setText(sorted.userName);
 
-                TextView numViews = (TextView) rowView.findViewById(R.id.num_views);
-                numViews.setText(String.valueOf(options[position].numberOfViews));
+            TextView numViews = (TextView) rowView.findViewById(R.id.num_views);
+            numViews.setText("Views: " + String.valueOf(sorted.numberOfViews));
 
-                TextView price = (TextView) rowView.findViewById(R.id.price);
-                price.setText(Double.toString(options[position].price));
-                Log.d(TAG, "setting up list index " + position + "with user name: " + userName.getText());
-                convertView = rowView;
+            TextView price = (TextView) rowView.findViewById(R.id.price);
+            price.setText("Price: " + Double.toString(sorted.price));
+            Log.d(TAG, "setting up list index " + position + "with user name: " + userName.getText());
 
-            }
-
-            return convertView;
+            return rowView;
         }
 
-
-        /**
-         * Reset the objects associated with this adapter as the sort algorithm may change the psotion of objects
-         *
-         * @param options
-         */
-        public void setOptions(SortableImpl[] options) {
+        public void setOptions(ArrayList<SortableImpl> options) {
             this.options = options;
-        }
 
+        }
 
     }
 
     ;
 
-
     /**
      * A comparator used during the sorting process
      */
-    public class SortComparator implements Comparator<Sortable> {
+    public class SortComparator implements Comparator<SortableImpl> {
 
         private int index;
 
-
         /**
-         * Constructor which accepts a sort index indicating what the sort criteria will be
+         * Constructor which accepts a sort index indicating what the sort
+         * criteria will be
          *
          * @param index
          */
@@ -302,31 +284,15 @@ public class MainActivity extends Activity {
 
         }
 
-        /**
-         * Compares the two specified objects to determine their relative ordering. The ordering
-         * implied by the return value of this method for all possible pairs of
-         * {@code (lhs, rhs)} should form an <i>equivalence relation</i>.
-         * This means that
-         * <ul>
-         * <li>{@code compare(a,a)} returns zero for all {@code a}</li>
-         * <li>the sign of {@code compare(a,b)} must be the opposite of the sign of {@code
-         * compare(b,a)} for all pairs of (a,b)</li>
-         * <li>From {@code compare(a,b) > 0} and {@code compare(b,c) > 0} it must
-         * follow {@code compare(a,c) > 0} for all possible combinations of {@code
-         * (a,b,c)}</li>
-         * </ul>
+        /*
+         * (non-Javadoc)
          *
-         * @param lhs an {@code Object}.
-         * @param rhs a second {@code Object} to compare with {@code lhs}.
-         * @return an integer < 0 if {@code lhs} is less than {@code rhs}, 0 if they are
-         * equal, and > 0 if {@code lhs} is greater than {@code rhs}.
-         * @throws ClassCastException if objects are not of the correct type.
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
         @Override
-        public int compare(Sortable lhs, Sortable rhs) {
+        public int compare(SortableImpl lhs, SortableImpl rhs) {
             return lhs.compareTo(rhs, index);
         }
     }
-
 
 }
